@@ -1,0 +1,550 @@
+:root {
+    color-scheme: dark;
+    font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #000;
+    color: #fff;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    margin: 0;
+    display: grid;
+    place-items: center;
+    background: #000;
+}
+
+.app-shell {
+    width: min(560px, calc(100% - 40px));
+}
+
+.app-shell.event-page {
+    width: min(920px, calc(100% - 40px));
+    padding: 72px 0;
+}
+
+.app-shell.compare-page {
+    width: min(1080px, calc(100% - 40px));
+    padding: 72px 0;
+}
+
+h1 {
+    margin: 0 0 32px;
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    font-weight: 600;
+    letter-spacing: -0.05em;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+button,
+.button-link {
+    display: inline-block;
+    border: 1px solid #fff;
+    border-radius: 0;
+    padding: 12px 18px;
+    background: #fff;
+    color: #000;
+    font: inherit;
+    font-weight: 600;
+    line-height: normal;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+button.secondary,
+.button-link.secondary {
+    border: 1px solid #fff;
+    background: transparent;
+    color: #fff;
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+}
+
+.event-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    margin-top: 40px;
+    padding-top: 32px;
+    border-top: 1px solid #333;
+}
+
+label {
+    display: grid;
+    gap: 8px;
+    color: #aaa;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+input {
+    width: 100%;
+    border: 0;
+    border-bottom: 1px solid #666;
+    border-radius: 0;
+    padding: 10px 0;
+    outline: none;
+    background: transparent;
+    color: #fff;
+    font: inherit;
+}
+
+input:focus {
+    border-color: #fff;
+}
+
+select {
+    width: 100%;
+    border: 0;
+    border-bottom: 1px solid #666;
+    border-radius: 0;
+    padding: 10px 0;
+    outline: none;
+    background: #000;
+    color: #fff;
+    font: inherit;
+}
+
+.form-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.event-list {
+    margin: 40px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.event-list:empty {
+    display: none;
+}
+
+.event-list li {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 16px 0;
+    border-top: 1px solid #333;
+}
+
+a {
+    color: inherit;
+}
+
+.event-list a,
+.back-link {
+    text-decoration: none;
+}
+
+.event-list a:hover,
+.back-link:hover {
+    text-decoration: underline;
+}
+
+.event-list time {
+    color: #888;
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 48px;
+    color: #aaa;
+}
+
+.event-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 32px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid #333;
+}
+
+.event-header h1 {
+    margin-bottom: 12px;
+}
+
+.event-header time {
+    color: #888;
+}
+
+.event-actions {
+    display: flex;
+    gap: 14px;
+    margin-top: 18px;
+}
+
+.edit-event-form {
+    margin: 0;
+    padding: 32px 0;
+    border-top: 0;
+    border-bottom: 1px solid #333;
+}
+
+.edit-event-form .form-status {
+    grid-column: 1 / -1;
+}
+
+.financial-summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-bottom: 1px solid #333;
+}
+
+.financial-summary div {
+    display: grid;
+    gap: 8px;
+    padding: 24px 0;
+}
+
+.financial-summary span {
+    color: #888;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+}
+
+.financial-summary strong {
+    font-size: 1.35rem;
+}
+
+.negative {
+    color: #aaa;
+}
+
+.event-stats {
+    display: flex;
+    gap: 32px;
+    margin: 0;
+}
+
+.event-stats dt {
+    color: #888;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+}
+
+.event-stats dd {
+    margin: 6px 0 0;
+    font-size: 1.4rem;
+}
+
+.expenses {
+    margin-top: 48px;
+}
+
+.revenue {
+    margin-top: 72px;
+    padding-top: 48px;
+    border-top: 1px solid #fff;
+}
+
+.section-heading,
+.expense-category > header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 24px;
+}
+
+.section-heading {
+    margin-bottom: 20px;
+}
+
+.section-heading h2,
+.expense-category h3 {
+    margin: 0;
+}
+
+.section-heading h2 {
+    font-size: 1.8rem;
+}
+
+.expense-category {
+    padding: 24px 0;
+    border-top: 1px solid #333;
+}
+
+.revenue-category {
+    padding: 24px 0;
+    border-top: 1px solid #333;
+}
+
+.revenue-category:first-child {
+    margin-top: 32px;
+}
+
+.revenue-category > header {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.revenue-category h3 {
+    margin: 0;
+}
+
+.revenue-category-summary small {
+    display: block;
+    margin-top: 5px;
+    color: #777;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+}
+
+.revenue-category-value,
+.revenue-item-value {
+    display: flex;
+    align-items: start;
+    gap: 20px;
+    text-align: right;
+}
+
+.expense-items {
+    margin: 16px 0;
+    padding: 0;
+    list-style: none;
+}
+
+.revenue-items {
+    margin: 16px 0;
+    padding: 0;
+    list-style: none;
+}
+
+.revenue-items:empty {
+    margin: 0 0 16px;
+}
+
+.revenue-items li {
+    padding: 10px 0;
+}
+
+.revenue-item-summary {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.revenue-items small {
+    display: block;
+    margin-top: 4px;
+    color: #777;
+}
+
+.expense-items:empty {
+    margin: 0 0 16px;
+}
+
+.expense-items li {
+    padding: 10px 0;
+    color: #ddd;
+}
+
+.expense-item-summary {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.expense-item-value {
+    display: flex;
+    align-items: start;
+    gap: 20px;
+    text-align: right;
+}
+
+.expense-items small {
+    display: block;
+    margin-top: 4px;
+    color: #777;
+}
+
+.item-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.text-button {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: #888;
+    font-size: 0.78rem;
+    font-weight: 500;
+}
+
+.text-button:hover {
+    color: #fff;
+}
+
+.add-item-button {
+    padding: 8px 12px;
+    color: #aaa;
+    border-color: #555;
+}
+
+.expense-form {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #333;
+}
+
+.compact-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 20px;
+    align-items: end;
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #333;
+}
+
+.compact-form .form-actions {
+    grid-column: auto;
+    margin: 0;
+}
+
+.compact-form .form-status {
+    grid-column: 1 / -1;
+}
+
+.edit-expense-form {
+    margin-bottom: 12px;
+}
+
+.notes-field,
+.expense-form .form-actions,
+.expense-form .form-status {
+    grid-column: 1 / -1;
+}
+
+.status {
+    min-height: 24px;
+    margin: 20px 0 0;
+    color: #aaa;
+    font-size: 0.9rem;
+}
+
+.compare-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto;
+    gap: 20px;
+    align-items: end;
+    padding-bottom: 40px;
+    border-bottom: 1px solid #333;
+}
+
+.versus {
+    padding-bottom: 11px;
+    color: #777;
+}
+
+.comparison-error {
+    color: #fff;
+}
+
+.comparison-table-wrap {
+    overflow-x: auto;
+    margin-top: 40px;
+}
+
+.comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: right;
+}
+
+.comparison-table th,
+.comparison-table td {
+    padding: 15px 12px;
+    border-bottom: 1px solid #292929;
+    white-space: nowrap;
+}
+
+.comparison-table th:first-child {
+    padding-left: 0;
+    text-align: left;
+}
+
+.comparison-table th:last-child,
+.comparison-table td:last-child {
+    padding-right: 0;
+}
+
+.comparison-table thead th {
+    color: #888;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.comparison-table tbody th {
+    font-weight: 500;
+}
+
+.comparison-table small {
+    display: block;
+    margin-top: 4px;
+    color: #777;
+}
+
+@media (max-width: 560px) {
+    .event-form,
+    .expense-form {
+        grid-template-columns: 1fr;
+    }
+
+    .event-header {
+        align-items: start;
+        flex-direction: column;
+    }
+
+    .financial-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .compact-form {
+        grid-template-columns: 1fr;
+    }
+
+    .compare-form {
+        grid-template-columns: 1fr;
+    }
+
+    .versus {
+        display: none;
+    }
+
+    .compact-form .form-status {
+        grid-column: auto;
+    }
+
+    .notes-field,
+    .expense-form .form-actions,
+    .expense-form .form-status {
+        grid-column: auto;
+    }
+}

@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ event["name"] }} · Blond Event Calculator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <main class="app-shell event-page" data-event-id="{{ event['id'] }}">
+        <a class="back-link" href="{{ url_for('index') }}">← Events</a>
+
+        <header class="event-header">
+            <div>
+                <h1>{{ event["name"] }}</h1>
+                <time datetime="{{ event['event_date'] }}">{{ event["event_date"] }}</time>
+                <div class="event-actions">
+                    <button id="edit-event-button" class="text-button" type="button">Edit Event</button>
+                    <button id="delete-event-button" class="text-button" type="button">Delete Event</button>
+                </div>
+            </div>
+            <dl class="event-stats">
+                <div>
+                    <dt>Capacity</dt>
+                    <dd>{{ event["venue_capacity"] }}</dd>
+                </div>
+                <div>
+                    <dt>Attendance</dt>
+                    <dd>{{ event["actual_attendance"] }}</dd>
+                </div>
+            </dl>
+        </header>
+
+        <form id="edit-event-form" class="event-form edit-event-form" hidden>
+            <label>
+                Event Name
+                <input name="name" type="text" value="{{ event['name'] }}" required>
+            </label>
+            <label>
+                Event Date
+                <input name="eventDate" type="date" value="{{ event['event_date'] }}" required>
+            </label>
+            <label>
+                Venue Capacity
+                <input name="venueCapacity" type="number" min="0" step="1" value="{{ event['venue_capacity'] }}" required>
+            </label>
+            <label>
+                Actual Attendance
+                <input name="actualAttendance" type="number" min="0" step="1" value="{{ event['actual_attendance'] }}" required>
+            </label>
+            <div class="form-actions">
+                <button type="submit">Save Changes</button>
+                <button id="cancel-event-edit" class="secondary" type="button">Cancel</button>
+            </div>
+            <p class="form-status status" aria-live="polite"></p>
+        </form>
+
+        <section class="financial-summary" aria-label="Financial summary">
+            <div>
+                <span>Tickets Sold</span>
+                <strong>{{ total_tickets_sold }}</strong>
+            </div>
+            <div>
+                <span>Revenue</span>
+                <strong>{{ total_revenue|money }}</strong>
+            </div>
+            <div>
+                <span>Expenses</span>
+                <strong>{{ total_expenses|money }}</strong>
+            </div>
+            <div>
+                <span>Profit / Loss</span>
+                <strong class="{% if profit < 0 %}negative{% endif %}">{{ profit|money }}</strong>
+            </div>
+        </section>
+
+        <section class="expenses">
+            <div class="section-heading">
+                <h2>Expenses</h2>
+                <strong>{{ total_expenses|money }}</strong>
+            </div>
+
+            {% for category_key, category_name in expense_categories %}
+                <article class="expense-category" data-category="{{ category_key }}">
+                    <header>
+                        <h3>{{ category_name }}</h3>
+                        <span>{{ category_totals[category_key]|money }}</span>
+                    </header>
+
+                    <ul class="expense-items">
+                        {% for item in items_by_category[category_key] %}
+                            <li class="expense-item" data-item-id="{{ item['id'] }}">
+                                <div class="expense-item-summary">
+                                    <div>
+                                        <strong>{{ item["name"] }}</strong>
+                                        {% if item["notes"] %}<small>{{ item["notes"] }}</small>{% endif %}
+                                    </div>
+                                    <div class="expense-item-value">
+                                        <span>{{ item["amount_cents"]|money }}</span>
+                                        <div class="item-actions">
+                                            <button class="text-button edit-item-button" type="button">Edit</button>
+                                            <button class="text-button delete-item-button" type="button">Delete</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <form class="edit-expense-form expense-form" hidden>
+                                    <label>
+                                        Item Name
+                                        <input name="name" type="text" value="{{ item['name'] }}" required>
+                                    </label>
+                                    <label>
+                                        Amount (€)
+                                        <input name="amount" type="number" min="0" step="0.01" value="{{ '%.2f'|format(item['amount_cents'] / 100) }}" required>
+                                    </label>
+                                    <label class="notes-field">
+                                        Notes
+                                        <input name="notes" type="text" value="{{ item['notes'] }}">
+                                    </label>
+                                    <div class="form-actions">
+                                        <button type="submit">Save Changes</button>
+                                        <button class="cancel-edit-button secondary" type="button">Cancel</button>
+                                    </div>
+                                    <p class="form-status status" aria-live="polite"></p>
+                                </form>
+                            </li>
+                        {% endfor %}
+                    </ul>
+
+                    <button class="add-item-button secondary" type="button">Add Item</button>
+
+                    <form class="expense-form" hidden>
+                        <input name="category" type="hidden" value="{{ category_key }}">
+                        <label>
+                            Item Name
+                            <input name="name" type="text" required>
+                        </label>
+                        <label>
+                            Amount (€)
+                            <input name="amount" type="number" min="0" step="0.01" required>
+                        </label>
+                        <label class="notes-field">
+                            Notes
+                            <input name="notes" type="text">
+                        </label>
+                        <div class="form-actions">
+                            <button type="submit">Save Item</button>
+                            <button class="cancel-item-button secondary" type="button">Cancel</button>
+                        </div>
+                        <p class="form-status status" aria-live="polite"></p>
+                    </form>
+                </article>
+            {% endfor %}
+        </section>
+
+        <section class="revenue">
+            <div class="section-heading">
+                <h2>Revenue</h2>
+                <strong>{{ total_revenue|money }}</strong>
+            </div>
+
+            <button id="add-revenue-category-button" class="secondary" type="button">
+                Add Category
+            </button>
+
+            <form id="revenue-category-form" class="compact-form" hidden>
+                <label>
+                    Category Name
+                    <input name="name" type="text" required>
+                </label>
+                <label>
+                    Category Type
+                    <select name="categoryType" required>
+                        <option value="tickets">Tickets</option>
+                        <option value="other">Other Income</option>
+                    </select>
+                </label>
+                <div class="form-actions">
+                    <button type="submit">Save Category</button>
+                    <button id="cancel-revenue-category-button" class="secondary" type="button">Cancel</button>
+                </div>
+                <p class="form-status status" aria-live="polite"></p>
+            </form>
+
+            <div class="revenue-categories">
+                {% for category in revenue_categories %}
+                    <article class="revenue-category" data-category-id="{{ category['id'] }}">
+                        <header class="revenue-category-summary">
+                            <div>
+                                <h3>{{ category["name"] }}</h3>
+                                <small>{{ "Tickets" if category["category_type"] == "tickets" else "Other Income" }}</small>
+                            </div>
+                            <div class="revenue-category-value">
+                                <span>{{ category["total_cents"]|money }}</span>
+                                <div class="item-actions">
+                                    <button class="text-button edit-revenue-category-button" type="button">Edit</button>
+                                    <button class="text-button delete-revenue-category-button" type="button">Delete</button>
+                                </div>
+                            </div>
+                        </header>
+
+                        <form class="edit-revenue-category-form compact-form" hidden>
+                            <label>
+                                Category Name
+                                <input name="name" type="text" value="{{ category['name'] }}" required>
+                            </label>
+                            <label>
+                                Category Type
+                                <select name="categoryType" required>
+                                    <option value="tickets" {% if category["category_type"] == "tickets" %}selected{% endif %}>Tickets</option>
+                                    <option value="other" {% if category["category_type"] == "other" %}selected{% endif %}>Other Income</option>
+                                </select>
+                            </label>
+                            <div class="form-actions">
+                                <button type="submit">Save Changes</button>
+                                <button class="cancel-revenue-category-edit secondary" type="button">Cancel</button>
+                            </div>
+                            <p class="form-status status" aria-live="polite"></p>
+                        </form>
+
+                        <ul class="revenue-items">
+                            {% for item in category["items"] %}
+                                <li class="revenue-item" data-item-id="{{ item['id'] }}">
+                                    <div class="revenue-item-summary">
+                                        <div>
+                                            <strong>{{ item["name"] }}</strong>
+                                            <small>
+                                                {{ item["unit_price_cents"]|money }} × {{ item["quantity"] }}
+                                                {% if item["notes"] %} · {{ item["notes"] }}{% endif %}
+                                            </small>
+                                        </div>
+                                        <div class="revenue-item-value">
+                                            <span>{{ item["line_total_cents"]|money }}</span>
+                                            <div class="item-actions">
+                                                <button class="text-button edit-revenue-item-button" type="button">Edit</button>
+                                                <button class="text-button delete-revenue-item-button" type="button">Delete</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <form class="edit-revenue-item-form expense-form" hidden>
+                                        <label>
+                                            Item Name
+                                            <input name="name" type="text" value="{{ item['name'] }}" required>
+                                        </label>
+                                        <label>
+                                            Unit Price (€)
+                                            <input name="unitPrice" type="number" min="0" step="0.01" value="{{ '%.2f'|format(item['unit_price_cents'] / 100) }}" required>
+                                        </label>
+                                        <label>
+                                            Quantity
+                                            <input name="quantity" type="number" min="0" step="1" value="{{ item['quantity'] }}" required>
+                                        </label>
+                                        <label>
+                                            Notes
+                                            <input name="notes" type="text" value="{{ item['notes'] }}">
+                                        </label>
+                                        <div class="form-actions">
+                                            <button type="submit">Save Changes</button>
+                                            <button class="cancel-revenue-item-edit secondary" type="button">Cancel</button>
+                                        </div>
+                                        <p class="form-status status" aria-live="polite"></p>
+                                    </form>
+                                </li>
+                            {% endfor %}
+                        </ul>
+
+                        <button class="add-revenue-item-button secondary" type="button">Add Item</button>
+
+                        <form class="revenue-item-form expense-form" hidden>
+                            <label>
+                                Item Name
+                                <input name="name" type="text" required>
+                            </label>
+                            <label>
+                                Unit Price (€)
+                                <input name="unitPrice" type="number" min="0" step="0.01" required>
+                            </label>
+                            <label>
+                                Quantity
+                                <input name="quantity" type="number" min="0" step="1" value="1" required>
+                            </label>
+                            <label>
+                                Notes
+                                <input name="notes" type="text">
+                            </label>
+                            <div class="form-actions">
+                                <button type="submit">Save Item</button>
+                                <button class="cancel-revenue-item-button secondary" type="button">Cancel</button>
+                            </div>
+                            <p class="form-status status" aria-live="polite"></p>
+                        </form>
+                    </article>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/event.js') }}"></script>
+</body>
+</html>

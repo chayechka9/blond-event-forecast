@@ -1,0 +1,12 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# Local data and secrets
+events.db
+.env
+
+# macOS and editors
+.DS_Store
+.vscode/

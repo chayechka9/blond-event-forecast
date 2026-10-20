@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compare Events · Blond Event Calculator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <main class="app-shell compare-page">
+        <a class="back-link" href="{{ url_for('index') }}">← Events</a>
+        <h1>Compare</h1>
+
+        <form class="compare-form" method="get">
+            <label>
+                Event A
+                <select name="eventA" required>
+                    <option value="">Select Event</option>
+                    {% for event in events %}
+                        <option value="{{ event['id'] }}" {% if selected_event_a == event['id'] %}selected{% endif %}>
+                            {{ event["name"] }} · {{ event["event_date"] }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </label>
+
+            <span class="versus">vs</span>
+
+            <label>
+                Event B
+                <select name="eventB" required>
+                    <option value="">Select Event</option>
+                    {% for event in events %}
+                        <option value="{{ event['id'] }}" {% if selected_event_b == event['id'] %}selected{% endif %}>
+                            {{ event["name"] }} · {{ event["event_date"] }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </label>
+
+            <button type="submit">Compare</button>
+        </form>
+
+        {% if error %}
+            <p class="status comparison-error">{{ error }}</p>
+        {% endif %}
+
+        {% if comparison_rows %}
+            <div class="comparison-table-wrap">
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>{{ event_a["name"] }}</th>
+                            <th>{{ event_b["name"] }}</th>
+                            <th>Difference</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in comparison_rows %}
+                            <tr>
+                                <th>{{ row["label"] }}</th>
+                                <td>{{ row["value_a"] }}</td>
+                                <td>{{ row["value_b"] }}</td>
+                                <td>
+                                    {{ row["difference"] }}
+                                    <small>{{ row["percentage_difference"] }}</small>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </main>
+</body>
+</html>

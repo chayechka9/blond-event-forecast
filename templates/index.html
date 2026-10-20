@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blond Event Calculator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <main class="app-shell">
+        <h1>Events</h1>
+
+        <section class="actions" aria-label="Event actions">
+            <button id="create-event-button" type="button">New Event</button>
+            {% if events|length >= 2 %}
+                <a class="button-link secondary" href="{{ url_for('compare_events') }}">Compare Events</a>
+            {% else %}
+                <button class="secondary" type="button" disabled>Compare Events</button>
+            {% endif %}
+        </section>
+
+        <form id="event-form" class="event-form" hidden>
+            <label>
+                Event Name
+                <input id="event-name" name="name" type="text" required>
+            </label>
+
+            <label>
+                Event Date
+                <input id="event-date" name="eventDate" type="date" required>
+            </label>
+
+            <label>
+                Venue Capacity
+                <input id="venue-capacity" name="venueCapacity" type="number" min="0" step="1" required>
+            </label>
+
+            <label>
+                Actual Attendance
+                <input id="actual-attendance" name="actualAttendance" type="number" min="0" step="1" required>
+            </label>
+
+            <div class="form-actions">
+                <button type="submit">Save Event</button>
+                <button id="cancel-event-button" class="secondary" type="button">Cancel</button>
+            </div>
+        </form>
+
+        <ul id="event-list" class="event-list">
+            {% for event in events %}
+                <li>
+                    <a href="{{ url_for('event_detail', event_id=event['id']) }}">
+                        {{ event["name"] }}
+                    </a>
+                    <time datetime="{{ event['event_date'] }}">{{ event["event_date"] }}</time>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <p id="status-message" class="status" aria-live="polite"></p>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
