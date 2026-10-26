@@ -1,6 +1,6 @@
-# Blond Event Calculator
+# Blond Event Forecast
 
-A minimalist full-stack event finance calculator for event organisers. It keeps event expenses and revenue in a local SQLite database, calculates profit or loss, and compares two events side by side.
+An event finance planning tool for organisers, built with Python, Flask and SQLite. Enter expected or actual costs, ticket prices and quantities to estimate event profit or loss, review the figures and compare two events side by side. Forecasts are based on the figures entered by the organiser.
 
 ## Features
 
