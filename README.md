@@ -24,8 +24,8 @@ An event finance planning tool for organisers, built with Python, Flask and SQLi
 1. Clone the repository and open its folder:
 
    ```bash
-   git clone https://github.com/chayechka9/blond-event-calculator.git
-   cd blond-event-calculator
+   git clone https://github.com/chayechka9/blond-event-forecast.git
+   cd blond-event-forecast
    ```
 
 2. Create and activate a virtual environment:
